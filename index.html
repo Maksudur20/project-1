@@ -1,149 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fake Store</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-        .card:hover {
-            transform: scale(1.05);
-        }
-        .card img {
-            width: 100%;
-            height: 150px;
-            object-fit: contain;
-            border-radius: 5px;
-        }
-        .view-btn {
-            background: #0f5f89;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .view-btn:hover {
-            background: #0870a0;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 400px;
-            width: 90%;
-            
-        }
-        .modal img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-        }
-        .close-btn {
-            background: red;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+      }
+      .card:hover {
+        transform: scale(1.05);
+      }
+      .card img {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+        border-radius: 5px;
+      }
+      .view-btn {
+        background: #0f5f89;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .view-btn:hover {
+        background: #0870a0;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 90%;
+      }
+      .modal img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+      }
+      .close-btn {
+        background: red;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container" id="products"></div>
-    
+
     <!-- Modal -->
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <img id="modalImage" src="" alt="">
-            <h2 id="modalTitle"></h2>
-            <p id="modalDescription"></p>
-            <p><strong>Price:</strong> $<span id="modalPrice"></span></p>
-            <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-            <p><strong>Rating:</strong> <span id="modalRating"></span>/5</p>
-            <p><strong>Reviews:</strong> <span id="modalReviews"></span></p>
-            <button class="close-btn" id="closeModal">Close</button>
-        </div>
+      <div class="modal" id="modal">
+        <img id="modalImage" src="" alt="" />
+        <h2 id="modalTitle"></h2>
+        <p id="modalDescription"></p>
+        <p><strong>Price:</strong> $<span id="modalPrice"></span></p>
+        <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+        <p><strong>Rating:</strong> <span id="modalRating"></span>/5</p>
+        <p><strong>Reviews:</strong> <span id="modalReviews"></span></p>
+        <button class="close-btn" id="closeModal">Close</button>
+      </div>
     </div>
 
     <script>
-        const productsDiv = document.querySelector("#products");
-        const modalOverlay = document.querySelector("#modalOverlay");
-        const modalImage = document.querySelector("#modalImage");
-        const modalTitle = document.querySelector("#modalTitle");
-        const modalDescription = document.querySelector("#modalDescription");
-        const modalPrice = document.querySelector("#modalPrice");
-        const modalCategory = document.querySelector("#modalCategory");
-        const modalRating = document.querySelector("#modalRating");
-        const modalReviews = document.querySelector("#modalReviews");
-        const closeModal = document.querySelector("#closeModal");
-        
-        async function fetchProducts() {
-            const API_URL = `https://fakestoreapi.com/products`;
-            
-            try {
-                const res = await fetch(API_URL);
-                const products = await res.json();
-                displayProducts(products);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
+      const productsDiv = document.querySelector("#products");
+      const modalOverlay = document.querySelector("#modalOverlay");
+      const modalImage = document.querySelector("#modalImage");
+      const modalTitle = document.querySelector("#modalTitle");
+      const modalDescription = document.querySelector("#modalDescription");
+      const modalPrice = document.querySelector("#modalPrice");
+      const modalCategory = document.querySelector("#modalCategory");
+      const modalRating = document.querySelector("#modalRating");
+      const modalReviews = document.querySelector("#modalReviews");
+      const closeModal = document.querySelector("#closeModal");
+
+      async function fetchProducts() {
+        const API_URL = "https://fakestoreapi.com/products";
+
+        try {
+          const res = await fetch(API_URL);
+          const products = await res.json();
+          displayProducts(products);
+        } catch (error) {
+          console.error("Error fetching", error);
         }
-        
-        function displayProducts(products) {
-            productsDiv.innerHTML = "";
-            
-            products.forEach((product) => {
-                const productDiv = document.createElement("div");
-                productDiv.classList.add("card");
-                
-                productDiv.innerHTML = `
+      }
+
+      function displayProducts(products) {
+        productsDiv.innerHTML = "";
+
+        products.forEach((product) => {
+          const productDiv = document.createElement("div");
+          productDiv.classList.add("card");
+
+          productDiv.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
                     <h2>${product.title}</h2>
                     <p><strong>Price:</strong> $${product.price}</p>
                 `;
 
-                const button = document.createElement("button");
-                button.classList.add("view-btn");
-                button.textContent = "View";
-                button.addEventListener("click", () => viewProduct(product));
+          const button = document.createElement("button");
+          button.classList.add("view-btn");
+          button.textContent = "View";
+          button.addEventListener("click", () => viewProduct(product));
 
-                productDiv.appendChild(button);
-                productsDiv.appendChild(productDiv);
-            });
-        }
-        
-        function viewProduct(product) {
+          productDiv.appendChild(button);
+          productsDiv.appendChild(productDiv);
+        });
+      }
+
+      function viewProduct(product) {
+        fetch(`https://fakestoreapi.com/products/${product.id}`)
+          .then((res) => res.json())
+          .then((product) => {
             modalImage.src = product.image;
             modalTitle.textContent = product.title;
             modalDescription.textContent = product.description;
@@ -152,12 +154,16 @@
             modalRating.textContent = product.rating.rate;
             modalReviews.textContent = product.rating.count;
             modalOverlay.style.display = "flex";
-        }
-        
-        closeModal.addEventListener("click", function () {
-            modalOverlay.style.display = "none";
-        });
-        fetchProducts();
+          })
+          .catch((error) =>
+            console.error("Error fetching", error)
+          );
+      }
+
+      closeModal.addEventListener("click", function () {
+        modalOverlay.style.display = "none";
+      });
+      fetchProducts();
     </script>
-</body>
+  </body>
 </html>
