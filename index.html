@@ -76,24 +76,54 @@
         cursor: pointer;
         margin-top: 10px;
       }
+      .card_container {
+        max-width: 86rem;
+        width: 98%;
+        margin-inline: auto;
+        display: flex;
+        gap: 20px;
+        justify-content: space-evenly;
+      }
+      .selection{
+        line-height: 2.5;
+        margin-top: 10%;
+      }
+      #select{
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 2px 2px rgb(124, 124, 124);
+      }
     </style>
   </head>
   <body>
-    <div class="container" id="products"></div>
+    <section class="card_container">
+      <section class="selection">
+        <label for="category"><strong>Choose Category</strong></label>
+        <select name="select" id="select">
+          <option value="men_clothing">Men's clothing</option>
+          <option value="jewelery">jewelery</option>
+          <option value="electronics">Electronics</option>
+          <option value="women_clothing">Women's clothing</option>
+        </select>
+      </section>
+      <section class="cards">
+        <div class="container" id="products"></div>
 
-    <!-- Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-      <div class="modal" id="modal">
-        <img id="modalImage" src="" alt="" />
-        <h2 id="modalTitle"></h2>
-        <p id="modalDescription"></p>
-        <p><strong>Price:</strong> $<span id="modalPrice"></span></p>
-        <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-        <p><strong>Rating:</strong> <span id="modalRating"></span>/5</p>
-        <p><strong>Reviews:</strong> <span id="modalReviews"></span></p>
-        <button class="close-btn" id="closeModal">Close</button>
-      </div>
-    </div>
+        <div class="modal-overlay" id="modalOverlay">
+          <div class="modal" id="modal">
+            <img id="modalImage" src="" alt="" />
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <p><strong>Price:</strong> $<span id="modalPrice"></span></p>
+            <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+            <p><strong>Rating:</strong> <span id="modalRating"></span>/5</p>
+            <p><strong>Reviews:</strong> <span id="modalReviews"></span></p>
+            <button class="close-btn" id="closeModal">Close</button>
+          </div>
+        </div>
+      </section>
+    </section>
 
     <script>
       const productsDiv = document.querySelector("#products");
@@ -155,14 +185,13 @@
             modalReviews.textContent = product.rating.count;
             modalOverlay.style.display = "flex";
           })
-          .catch((error) =>
-            console.error("Error fetching", error)
-          );
+          .catch((error) => console.error("Error fetching", error));
       }
 
       closeModal.addEventListener("click", function () {
         modalOverlay.style.display = "none";
       });
+
       fetchProducts();
     </script>
   </body>
